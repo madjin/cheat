@@ -1,0 +1,19 @@
+## ZEC ##
+
+## Help
+./zcash-cli help
+
+## balance
+./zcash-cli getbalance
+
+## picks one of the generated addresses that haven't received coin
+./zcash-cli getnewaddress
+
+## Show transactions that have received cash 
+./zcash-cli listreceivedbyaddress 0 true
+
+## Send transactions
+./zcash-cli sendtoaddress <taddress> 0.7
+
+## List transactions to wallets
+./zcash-cli listtransactions | grep to:

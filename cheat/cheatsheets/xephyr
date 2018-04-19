@@ -1,0 +1,4 @@
+# On your wm of choice, open two terminals and type on the first
+Xephyr :1
+# and on the other terminal [can select any WM]
+DISPLAY=:1 awesome

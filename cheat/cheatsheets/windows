@@ -1,0 +1,18 @@
+ipconfig /all
+ipconfig /displaydns
+netstat -ano
+netstat -anop tcp1
+netstat -an| findstr LISTENING
+route print 
+arp -a 
+arp -a 
+nslookup, set type=any, ls -d domain results.txt, exit
+nslookup -type=SRV _www._tcp.url.com
+tftp -I <ip> GET <remotefile>
+netsh wlan show profiles
+netsh firewall set opmode disable
+netsh wlan export profile folder=. clear
+netsh interface ip show interfaces
+netsh interface ip set address local static <ip> <nmask> <gw> <ID>
+netsh interface ip set dns local static <ip>
+netsh interface ip set address local dhcp

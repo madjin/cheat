@@ -1,0 +1,21 @@
+# Disable history logging
+unset HISTFILE              # Need to logout to take effect
+
+# Make random 3MB file
+dd if=/dev/urandom of= file bs=3145728 count=100
+dd if=/dev/random of=~/file bs=1000 count=10000   # make random 10 mb file
+# clear logs [Be sure that logging is turned off]
+echo "" > /var/log/auth.log
+echo "" > ~/.bash_history
+rm ~/.bash_history -rf
+history -c                  # Clear current session history
+export HISTFILESIZE=0       # Set history max lines to 0
+export HISTSIZE=0           # Set history max commands to 0
+ln /dev/null ~/.bash_history -sf   # Perm send all bash history commands to /dev/null
+
+# Data recovery
+foremost -v -o /home/user/dump -t doc /dev/sdc
+
+# Data deletion
+dd if=/dev/zero of=/dev/sdc conv=notrunc
+# use scalpel / bc-wipe to delete the key and wipe the container

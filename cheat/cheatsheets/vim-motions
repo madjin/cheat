@@ -1,0 +1,84 @@
+Large Object Motions:
+(
+)
+{
+}
+[[
+[]
+][
+]]
+[m
+[M
+]m
+]M
+[(
+])
+[{
+]}
+ 
+Word Motions:
+w
+W
+e
+E
+b
+B
+ge
+gE
+ 
+Line Motions:
+H
+L
+M
+j
+k
+gg
+G
+-
++
+ 
+Display Line Motions:
+gj
+gk
+ 
+Column Motions:
+h
+l
+^
+$
+|
+0
+ 
+Display Column Motions:
+g^
+g$
+g0
+gm
+ 
+Search Motions:
+/
+?
+n
+N
+#
+*
+ 
+Find Motions:
+F
+f
+T
+t
+;
+,
+ 
+Extended Matchit Motions:
+%
+g%
+ 
+Jump Motions:
+`
+'
+ 
+Buffer Motions:
+{count}%
+{count}go
