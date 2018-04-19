@@ -6,3 +6,82 @@ cat -n /path/to/foo
 
 # Display contents with line numbers (blank lines excluded)
 cat -b /path/to/foo
+
+# Start a text file or quick note
+cat > file.txt   # CTRL-D to exit
+
+# To Find CVE fix from the rpm log
+for i in $(cat vulns.txt); do echo $i; rpm -qa ?changelog | grep -i $i; done
+
+# Bruteforce dm-crypt using dictionary
+cat dictionary.txt|while read a; do echo $a|cryptsetup luksOpen /dev/sda5 sda5 $a && echo KEY FOUND: $a; done
+
+# Print ASCII Character Chart
+for i in {1..256};do p="  $i";echo -e "${p: -3} \\0$(($i/64*100+$i%64/8*10+$i%8))";done|cat -t|column -c120
+
+# Save a result based on a command's output in a variable while printing the command output
+num_errs=`grep ERROR /var/log/syslog | tee >(cat >&2) | wc -l`
+
+# Skype conversation logs to IRC-format logs
+cat skype_log | sed -s 's/\(\[.*\]\) \(.*\): \(.*\)/<\2> \3/'
+
+# Merge Multiple PDFs
+pdftk *.pdf cat output merged.pdf
+
+# calculate how much bogomips one cpu core has (assuming you have 4 cores).
+cat /proc/cpuinfo | grep BogoMIPS | uniq | sed 's/^.*://g' | awk '{print($1 / 4) }'
+
+# look some php code by some keywords
+locate *\\.php|xargs grep --color=always -i -5  "namespace\s.*\W"|less
+
+# Spy audio, it only records if detects a sound or noise
+arecord -q -f cd -d 1 recvol.wav;sox recvol.wav -n stat 2>&1|grep RMS|grep amplitude|cut -d"." -f2|cut -c 1-2>recvol;echo $((`cat recvol`+1))>recvol;rec -t wav - silence 1 0.1 `cat recvol` -1 1.0 `cat recvol`%|lame -s 44.1 -a -v - >record.mp3
+
+# Convert metasploit cachedump files to Hashcat format for cracking
+cat cachedump.txt | awk -F : '{print $2":"$1}'
+
+# Convert JSON to YAML
+catmandu convert JSON to YAML < file.json > file.yaml
+
+# Create named LUKS encrypted volume
+edrv() { N=${1:-edrv}; truncate -s ${2:-256m} $N.img && L=$(losetup -f) && losetup $L $N.img && cryptsetup luksFormat --batch-mode $L && cryptsetup luksOpen $L $N && mkfs.vfat /dev/mapper/$N -n $N; cryptsetup luksClose $N; echo losetup -d $L to unmount; }
+
+# Show concurrent memory usage for individual instances of an application
+ps -eo pmem,comm | grep application-name
+
+# find and output files content with filtering by filename and specific string
+find . -name *.properties -exec /bin/echo {} \; -exec cat {} \; | grep -E 'listen|properties'
+
+# TCP server on one socket
+while true; do cat "file"; done | nc -v -l 1337
+
+# Add new software to Gnome search menu thing
+gnome-desktop-item-edit /usr/share/applications/ --create-new
+
+# Generate random password on Mac OS X
+cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo
+
+# List all password hashes
+cat /etc/shadow
+
+# count total number of lines of ruby code
+( find ./ -name '*.rb' -print0 | xargs -0 cat ) | wc -l
+
+# Converts all windows .URL shortcuts in a directory to linux (gnome) .desktop shortcuts
+find . -name "*.URL" | while read file ; do cat "$file" | sed 's/InternetShortcut/Desktop Entry/' | sed '/^\(URL\|\[\)/!d' > "$file".desktop && echo "Type=Link" >> "$file".desktop ; done
+
+# Stores current working directory before exit and restores it on a new bash start
+echo -e 'alias exit='\''pwd > ~/.lastdir;exit'\''\n[ -n "$(cat .lastdir 2>/dev/null)" ] && cd "$(cat .lastdir)"' >> ~/.bash_aliases
+
+# Check fstab volumes and volumes mounted.
+diff <(cat /etc/fstab | grep vol | grep -v "^#" | awk '{print $1}') <(df -h | grep vol)
+
+# chroot, bind mount  without root privilege/setup
+proot -r /media/user/ubuntu12.10/  cat /etc/motd
+
+# You can access some-image.html where you include a image any other file than you can access it through http using a browser (e.g. http://xxx.xxx.xxx.xxx:12345 )
+cat some-image.html | nc -v -l -p 12345
+
+# Prepend a text to a file.
+echo "text to prepend" | cat - file
+

@@ -1,3 +1,9 @@
+# list packages by size
+dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+
+# recompile kernel
+# /usr/src; wget kernel; tar -Jxvf kernel; rm linux; ln -s kernel linux; cd linux zcat /boot/config.gz > .config; make oldconfig; make deb-pkg; cd ..; dpkg -i *.deb
+
 # Extract contents of a .deb file
 $ ar vx foo.deb    # -> data.tar.gz
 $ tar xf data.tar.gz

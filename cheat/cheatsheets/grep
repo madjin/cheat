@@ -1,13 +1,13 @@
-# Search a file for a pattern
+# Basic grep
 grep pattern file
 
-# Case insensitive search (with line numbers)
-grep -in pattern file
+# case nonsensitive research:
+grep -i pattern file
 
 # Recursively grep for string <pattern> in folder:
 grep -R pattern folder
 
-# Read search patterns from a file (one per line)
+# Getting pattern from file (one by line):
 grep -f pattern_file file
 
 # Find lines NOT containing pattern
@@ -17,7 +17,7 @@ grep -v pattern file
 grep "^00" file  #Match lines starting with 00
 grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" file  #Find IP add
 
-# Find all files which match {pattern} in {directory}
+# Find all files who contain {pattern} in the directory {directory}.
 # This will show: "file:line my research"
 grep -rnw 'directory' -e "pattern"
 
@@ -27,3 +27,79 @@ ps aux | grep '[h]ttpd'
 
 # Colour in red {bash} and keep all other lines
 ps aux | grep -E --color 'bash|$'
+
+# Check SSH fingerprints
+for id in `ls -1 ~/.ssh | grep -v "authorized\|known_hosts\|config\|\."` ; do echo -n "$id: " ; ssh-keygen -l -f .ssh/$id ; done
+
+# Write a shell script that removes files that contain a string
+find -type f -exec grep -q "regexp" {} \; -delete
+
+# Search for string through files
+grep -Rl "pattern" files_or_dir
+
+# Write a shell script that removes files that contain a string
+find . | xargs grep -l "FOOBAR" | awk '{print "rm -f "$1}' > doit.sh
+
+# Given a file path, unplug the USB device on which the file is located (the file must be on an USB device !)
+echo $(sudo lshw -businfo | grep -B 1 -m 1 $(df "/path/to/file" | tail -1 | awk '{print $1}' | cut -c 6-8) | head -n 1 | awk '{print $1}' | cut -c 5- | tr ":" "-") | sudo tee /sys/bus/usb/drivers/usb/unbind
+
+# define a function for searching bash history
+hgrep() {   ... }  longer then 255 characters, see below
+
+# define a function "hg" combining history and grep to save typing
+function hg () { history | grep $* ; }  # define a function combining history and grep to save typing :-)
+
+# Btrfs: Find file names with checksum errors
+dmesg | grep -Po 'csum failed ino\S* \d+' | awk '{print $4}' | sort -u | xargs -n 1 find / -inum 2> /dev/null
+
+# Btrfs: Find file names with checksum errors
+dmesg | grep -Po 'csum failed ino\S* \d+' | sort | uniq | xargs -n 3 find / -inum 2> /dev/null
+
+# Get a PostgreSQL servers version
+psql -h <SERVER NAME HERE> -c 'SELECT version();' | grep -v 'version\|---\|row\|^ *$' | sed 's/^\s*//'
+
+# Destroy all disks on system simultaneously
+for i in `sudo /sbin/fdisk -l |grep Disk |grep dev |awk '{ print $2 }' |sed s/://g` ; do sudo /usr/bin/dd if=/dev/urandom of=$i bs=8M & done
+
+# get Windows OS architecture using Cygwin
+wmic OS get OSArchitecture /value | grep -Eo '[^=]*$'
+
+# Arguments too long
+ls | grep ".txt$" | xargs -i WHATEVER_COMMAND {}
+
+# List the busiest script running on a cPanel server (showing domain)
+/usr/bin/lynx -dump -width 500 http://127.0.0.1/whm-server-status | grep GET | awk '{print $12 $14}' | sort | uniq -c | sort -rn | head
+
+# IP addresses connected to port 80
+netstat -tn 2>/dev/null | grep ':80 ' | awk '{print $5}' |sed -e 's/::ffff://' | cut -f1 -d: | sort | uniq -c | sort -rn | head
+
+# List the busiest websites on a cPanel server
+/usr/bin/lynx -dump -width 500 http://127.0.0.1/whm-server-status | grep GET | awk '{print $12}' | sort | uniq -c | sort -rn | head
+
+# Save a result based on a command's output in a variable while printing the command output
+num_errs=`grep ERROR /var/log/syslog | tee >(cat >&2) | wc -l`
+
+# truncate deleted files from lsof
+lsof | grep -i deleted | grep REG | grep -v txt | ruby -r 'pp' -e 'STDIN.each do |v| a =  v.split(/ +/); puts `:> /proc/#{a[1]}/fd/#{a[3].chop}`; end'
+
+# look some php code by some keywords
+grep -r --include=*.php "something" /foo/bar
+
+# Sort netflow packet capture
+grep -o -P '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\:[0-9]{1,5}\s->\s{5}[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\:[0-9]{1,5}' <capture file> | tr -d ' ' | sed  's/:.....//g' | sort -n | uniq -c | sort -nr
+
+# Remap Nic aliases from PCI location
+lspci -vv | grep 'Ethernet\|Serial' | awk 'NR == 1{ printf $1 }  NR == 2 { print " mac " $7 }' | sed ?e 's/-/:/g' -e 's/:f[ef]:f[ef]//g' -e 's/01:00.0/eth0/g' -e 's/01:00.1/eth1/g' -e 's/01:00.2/eth2/g' -e 's/01:00.3/eth3/g' > /etc/iftab && ifrename
+
+# calculate how much bogomips one cpu core has (assuming you have 4 cores).
+cat /proc/cpuinfo | grep BogoMIPS | uniq | sed 's/^.*://g' | awk '{print($1 / 4) }'
+
+# look some php code by some keywords
+locate *\\.php|xargs grep --color=always -i -5  "namespace\s.*\W"|less
+
+# Spy audio, it only records if detects a sound or noise
+arecord -q -f cd -d 1 recvol.wav;sox recvol.wav -n stat 2>&1|grep RMS|grep amplitude|cut -d"." -f2|cut -c 1-2>recvol;echo $((`cat recvol`+1))>recvol;rec -t wav - silence 1 0.1 `cat recvol` -1 1.0 `cat recvol`%|lame -s 44.1 -a -v - >record.mp3
+
+# adb connect to last IP address
+eval $(history | cut -c 8- | grep "adb connect [0-9]" | tail -1)
+

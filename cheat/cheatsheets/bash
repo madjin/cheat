@@ -25,3 +25,9 @@ echo ${PIPESTATUS[0]}  # replace 0 with N
 
 # Lock file:
 ( set -o noclobber; echo > my.lock ) || echo 'Failed to create lock file'
+
+# Corporate bullshit generator
+curl -s http://cbsg.sourceforge.net/cgi-bin/live | grep -Eo '^<li>.*</li>' | sed s,\</\\?li\>,,g | shuf -n 1 
+
+# find top 10 most common words in text file
+cat mybook.txt|tr -s '[:space:]' '\n' |tr '[:upper:]' '[:lower:]'|sort|uniq -c|sort -nr|head -10

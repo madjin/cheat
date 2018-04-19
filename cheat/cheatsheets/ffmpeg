@@ -14,10 +14,111 @@ ffmpeg -r 18 -pattern_type glob -i '*.png' -b:v 21000k -s hd1080 -vcodec vp9 -an
 # Combine video and audio into one file
 ffmpeg -i video.ext -i audio.ext -c:v copy -c:a copy output.ext
 
+# Conversion of media stream
+curl 'AudioStream' | ffmpeg -i - -acodec libvorbis file.ogg
+
+# iMovie compatible ffmpeg transcoding
+ffmpeg -i $video -c:v prores -profile:v 2 -c:a copy ${video}.mov
+
+# Stream a video file as  live stream
+ffmpeg -re -i localFile.mp4 -c copy -f flv rtmp://server/live/streamName
+
+# Rewrap an AVCHD (MTS/M2TS) video as MOV
+ffmpeg -i "input.mts" -vcodec copy -acodec pcm_s16le "output.mov"
+
+# Convert all files *.mp4 to *.mpeg using ffmpeg (Windows Cmd line)
+FOR %I IN (*.mp4) DO \Tools\ffmpeg\bin\ffmpeg.exe -i "%I" "%~nI.mpeg"
+
+# install codecs in ubuntu (to convert from mp4 to mp3 etc)
+sudo apt-get install ffmpeg libavcodec-extra-53
+
+# strips ogg audio from webm video ( no reencoding )
+for file in "$@"; do   name=$(basename "$file" .webm)   echo ffmpeg -i $file -vn -c:a copy $name.ogg    ffmpeg -i "$file" -vn -c:a copy "$name.ogg" done
+
+# Linux screenshot
+ffmpeg -f x11grab -s wxga -r 25 -i :0.0 -sameq /home/ken/Desktop/moviemade1.mpg
+
+# convert flac files to mp3 files into subdir mp3
+IFS=$(echo -en "\n\b"); input="/my/input/dir/*.flac"; mkdir -p $(dirname $f)/mp3; for f in $input; do ffmpeg -i $f -ab 196k -ac 2 -ar 48000 $(dirname $f)/mp3/$(basename "${f:0:${#f}-4}mp3"); done
+
+# Capture video of a linux desktop
+ffmpeg -f x11grab -s wxga -r 25 -i :0.0+1366,0 -qscale 0 /tmp/out.mpg
+
+# Losslessly combine all MP3s in a directory (e.g. an audiobook)
+ffmpeg -i "concat:$(find . -name "*.mp3" | sort | tr '\n' '|')" -acodec copy ../$(basename $(pwd)).mp3 && mp3val -f ../$(basename $(pwd)).mp3
+
+# Timelapse with ffmpeg (after symlinking pictures as per ffmpeg FAQ)
+ffmpeg -r 12 -i img%03d.jpg -sameq -s hd720 -vcodec libx264 -crf 25 OUTPUT.MP4
+
+# Creating A Single Image Video With Audio via ffmpeg
+ffmpeg -loop 1 -i image.png -i sound.mp3 -shortest video.mp4
+
+# Stream system sounds over rtmp
+sox -d -p | ffmpeg -i pipe:0 -f flv -preset ultrafast -tune zerolatency rtmp://localhost/live/livestream
+
+# Get video information with ffmpeg
+mp4box -info  video.mp4
+
+# Press enter and take a WebCam picture.
+read && ffmpeg -y -r 1 -t 3 -f video4linux2 -vframes 1 -s sxga -i /dev/video0 ~/webcam-$(date +%m_%d_%Y_%H_%M).jpeg
+
+# Extract raw audio from video
+ffmpeg -i source.mpg -f s16le -acodec pcm_s16le audio.raw
+
+# Convert video file to sequence of images
+ffmpeg -i source.mpg -r 24 -f image2 still-%6d.png
+
+# Converter mkv (Blu-Ray_1280x540_AAC_5.1]_[10Bit]) para mp4 sem perder a qualidade
+ffmpeg -i input.mkv -vcodec copy -acodec copy -absf aac_adtstoasc output.m4v
+
+# Android PNG screenshot
+adb pull /dev/graphics/fb0 /dev/stdout | ffmpeg -vframes 1 -vcodec rawvideo -f rawvideo -pix_fmt rgb32 -s 480x800 -i pipe:0 -f image2 -vcodec png screenshot.png
+
+# Screencast of your PC Display with webm output
+avconv -v warning -f alsa -ac 2 -i default -f x11grab -r 15 -s wxga -i :0.0 -acodec libvorbis -ab 320k -vcodec libvpx -qmax 2 -qmin 1 -threads auto -y -metadata title="Title here" ~/Video/AVCONV_REG.webm
+
+# Screencast of your PC Display with mp4 output
+avconv -v warning -f alsa -i default -f x11grab -r 15 -s wxga -i :0.0 -vcodec libx264 -preset ultrafast -threads auto -y -metadata title="Title here" ~/Video/AVCONV_REG.mp4
+
+# Burn a simple DVD-Video without menu using any given video file
+avconv -i input.avi -target pal-dvd dvd.mpg && echo PAL > ~/.config/video_format && dvdauthor -o dvd/ -t dvd.mpg && dvdauthor -o dvd/ -T && growisofs -Z /dev/dvd -dvd-video dvd/
+
+# Capture screen and mic input using FFmpeg and ALSA
+a=$(xwininfo |gawk 'BEGIN {FS="[x+ \t]*"} /-geometry/ {print int(($3+1)/2)*2"x"int(($4+1)/2)*2"+"$5"+"$6}') ; echo ${a} ; ffmpeg -f x11grab -s ${a} -r 10 -i :0.0 -sameq -f mp4 -s wvga -y /tmp/out.mpg
+
+# Remove audio stream from a media file
+avconv -i infile.avi -an outfile.avi
+
+# Convert mp4 to webm
+# ffmpeg -i input-file.mp4 -c:v libvpx -crf 10 -b:v 1M -c:a libvorbis output-file.webm
+
+# Print file metadata etc.
+ffmpeg -i path/to/file.ext
+
+# Convert all m4a files to mp3
+for f in *.m4a; do ffmpeg -i "$f" -acodec libmp3lame -vn -b:a 320k "${f%.m4a}.mp3"; done
+
+# Convert video from .foo to .bar
+# -g : GOP, for searchability
+ffmpeg -i input.foo -vcodec bar -acodec baz -b:v 21000k -b:a 320k -g 150 -threads 4 output.bar
+
+# Convert image sequence to video
+ffmpeg -r 18 -pattern_type glob -i '*.png' -b:v 21000k -s hd1080 -vcodec vp9 -an -pix_fmt yuv420p -deinterlace output.ext
+
+# Combine video and audio into one file
+ffmpeg -i video.ext -i audio.ext -c:v copy -c:a copy output.ext
+
 # Listen to 10 seconds of audio from a video file
 #
 # -ss : start time
 # -t  : seconds to cut
 # -autoexit : closes ffplay as soon as the audio finishes
 ffmpeg -ss 00:34:24.85 -t 10 -i path/to/file.mp4 -f mp3 pipe:play | ffplay -i pipe:play -autoexit
+
+#  Add fade in/out to first & last 25 frames of a video 
+melt colour:black out=24 vid.mp4 -mix 25 -mixer luma colour:black out=24 -mix 25 -mixer luma -consumer avformat:out.mp4
+29 works (poe)
+
+# convert ogg to mp3
+ffmpeg -i audio.ogg -acodec libmp3lame audio.mp3
 
