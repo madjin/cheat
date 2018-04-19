@@ -4,18 +4,11 @@ ssh -i /path/to/file.pem user@example.com
 # To connect on an non-standard port:
 ssh -p 2222 user@example.com
 
-# To connect and forward the authentication agent
-ssh -A user@example.com
-
 # To execute a command on a remote server:
 ssh -t user@example.com 'the-remote-command'
 
 # To tunnel an x session over SSH:
 ssh -X user@example.com
-
-# Redirect traffic with a tunnel between local host (port 8080) and a remote
-# host (remote.example.com:5000) through a proxy (personal.server.com):
-ssh -f -L 8080:remote.example.com:5000 user@personal.server.com -N
 
 # To launch a specific x application over SSH:
 ssh -X -t user@example.com 'chromium-browser'
@@ -38,6 +31,14 @@ ssh user@example.com "cd /var/www/Shared/; tar zcf - asset1 asset2" | tar zxf -
 # Will allow you to mount a folder securely over a network.
 sshfs name@server:/path/to/folder /path/to/mount/point
 
-# Emacs can read file through SSH
-# Doc: http://www.gnu.org/software/emacs/manual/html_node/emacs/Remote-Files.html
-emacs /ssh:name@server:/path/to/file
+# How to make rsync over ssh tunnel.
+sshpass -p [password] rsync -av -e ssh [utente]@[indirizzoip]:/directorydacopiare/ /directorydidestinazione
+
+# x to x [my computer is your computer now!]
+ssh -X demo@192.168.1.105 x2x -to :0.0 -west
+
+# Anonymous SSH using tor (or any SOCKS based proxy)
+ssh -o ProxyCommand="nc -X 5 -x localhost:9050 %h %p" username@remote_host
+
+# oneliner to transfer a directory using ssh and tar
+tar cvzf - dir | ssh my_server 'tar xzf -'

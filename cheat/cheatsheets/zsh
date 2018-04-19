@@ -80,3 +80,6 @@ echo ${(s._.)file}
 # Join expansion flag, opposite of the split flag.
 array=(a b c d)
 echo ${(j.-.)array} # a-b-c-d
+
+# Find files larger than 100MB and display in human readable size
+ls -sh **/*(.Lm+100)
