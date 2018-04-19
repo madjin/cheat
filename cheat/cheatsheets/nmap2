@@ -1,0 +1,75 @@
+# Ping sweep without NMAP
+(prefix="10.59.21" && for i in `seq 254`; do (sleep 0.5 && ping -c1 -w1 $prefix.$i &> /dev/null && arp -n | awk ' /'$prefix'.'$i' / { print $1 " " $3 } ') & done; wait)
+
+# NMAP_UNDERGROUND_VECTRA
+nmap -sS -O -v -oS - 192.168.2.0/24
+
+# Ping all hosts on 192.168.1.0/24
+nmap -sn 192.168.1.0/24
+
+# Ping all hosts on 192.168.1.0/24
+nmap -sP 192.168.0.1-254
+
+# network interface and routing summary
+nmap --iflist
+
+# Show alive host on network
+nmap -sP 192.168.0.* | grep Host | tr "(" ")" | cut -d\) -f2
+
+# script broadcast-pppoe-discover
+nmap -T4 --script broadcast-pppoe-discover 192.168.122.0/24
+
+# Nmap list IPs in a network and saves in a txt
+nmap -sP 192.168.1.0/24 | grep "Nmap scan report for"| cut -d' ' -f 5  > ips.txt
+
+# Look for free ip's in a given /24 subnet.
+SUBNET="192.168.41" ; diff -y <(nmap -sP -n ${SUBNET}.0/24 | grep ${SUBNET}. | awk '{print $5}' | sort -t"." -k4 -n) <(for i in $(seq 1 254); do echo ${SUBNET}.$i; done)
+
+# Getting a list of active addresses in your own network.
+nmap -n -sP -oG - 10.10.10.*/32 | grep ": Up" | cut -d' ' -f2
+
+# Ping sweep without NMAP
+prefix="169.254" && for i in {0..254}; do echo $prefix.$i/8; for j in {1..254}; do sh -c "ping -m 1 -c 1 -t 1 $prefix.$i.$j | grep \"icmp\" &" ; done; done
+
+# scan subnet for used IPs
+nmap -T4 -sn 192.168.1.0/24
+
+# Find resolvable hosts in subnet
+nmap -sL 74.125.237.1/24
+
+# Get list of servers with a specific port open
+nmap -sT -p 80 --open 192.168.1.1/24
+
+# Intercept, monitor and manipulate a TCP connection.
+ncat -l -p 1234 --sh-exec "tee -a to.log | nc machine port | tee -a from.log"
+
+# A list of IPs (only) that are online in a specific subnet.
+nmap -sP  192.168.1.0/24 | awk "/^Host/"'{ print $3 }' |nawk -F'[()]' '{print $2}'
+
+# Check a port's state on a given host
+checkport() { sudo nmap -sS -p $1 $2 }
+
+# nmap port scanning
+nmap -v -sT 192.168.0.0/24
+
+# List services running on each open port
+nmap -T Aggressive -A -v 127.0.0.1 -p 1-65000
+
+# Nmap find open TCP/IP ports for a target that is blocking ping
+nmap -sT -PN -vv <target ip>
+
+# Display only hosts up in network
+nmap -sP -PR -oG - `/sbin/ip -4 addr show | awk '/inet/ {print $2}' | sed 1d`
+
+# port scan using parallel
+seq 1 255 | parallel -j+0 'nc -w 1 -z -v 192.168.1.{} 80'
+
+# sort a list of comma separated numbers: sort_csn
+sort_csn () { echo "${1}" | sed -e "s/,/\n/g"| sort -nu | awk '{printf("%s,",$0)} END {printf("\n")}' | sed -e "s/,$//"; }
+
+# Using NMAP to check if a port is open or close
+nmap -oG - -T4 -p22 -v 192.168.0.254 | grep ssh
+
+# count of down available ips
+nmap -v -sP 192.168.10.0/24 | grep -c down
+

@@ -1,0 +1,78 @@
+# Pipe media file on samba share to mplayer
+smbget -u username -p passw0rd -w domain_or_workgroup //server/share/mediafile.ogv -O - | mplayer -
+
+# Listen and sort your music, with prompt for deleting (minimal alternative version)
+for i in *; do mplayer "$i" && rm -i "$i"; done
+
+# Listen and sort your music, with prompt for deleting
+for i in $(ls *.mp3); do mplayer $i && echo "delete it? [y/n]" && read trash && if [ "$trash" == "y" ]; then rm $i; fi; do
+
+# Use mplayer to save video streams to a file
+mplayer -dumpstream -dumpfile stream_video_name url
+
+# watch video youtube without flash but with mplayer and youtube-dl
+mplayer $(youtube-dl -g http://youtube.com/example)
+
+# Securely stream (and save) a file from a remote server
+ssh USER@HOST cat REMOTE_FILE.mp4 | tee LOCAL_FILE.mp4 | mplayer -
+
+# Stream and copy a video from lan
+nc HOST PORT | tee movie.mp4 | mplayer -
+
+# Print permanent subtitles on a video (international edition :) )
+transcode -i myvideo.avi -x mplayer="-utf8 -sub myvideo.srt" -o myvideo_subtitled.avi -y xvid
+
+# Lossless DVD rips with
+mplayer dvd://1 -dumpstream -dumpfile /tmp/file.mpg
+
+# Stream (almost) any music track in mplayer
+python2 -c 'import urllib2 as u, sys as s, json as j, subprocess as p;p.call(["mplayer", u.urlopen(j.loads(u.urlopen("http://ex.fm/api/v3/song/search/%s" % "+".join(s.argv[1:])).read())["songs"][0]["url"]).geturl().split("#")[0]])' lenny kravitz fly away
+
+# Play Mediafile in multipart RAR archive on the fly with buffer to seek back and forth
+unrar p -inul *.rar|mplayer -cache 100000 -
+
+# Merge AVI-files without recoding
+cat part1.avi part2.avi part3.avi > tmp.avi && mencoder -forceidx -oac copy -ovc copy tmp.avi -o output.avi && rm -f tmp.avi
+
+# Detect broken video files with mplayer and bash in the current directory
+for i in *.flv *.mkv *.avi; do mplayer -ao null -vo null -ss 0 -endpos 1 >/dev/null "$i" 2> >(grep -qi error && echo >&2 "$i seems bad"); done
+
+# Extract audio from dvd vobs in current dir
+for i in *.VOB; do mplayer "$i" -ao pcm:file="${i%.*}.wav"; done
+
+# Amplify movie playback
+mplayer -af volume=10.1:0 $movie
+
+# Play all the music in a folder, on shuffle
+while [[ 1 ]]; do n=( */* ); s=${n[$(($RANDOM%${#n[@]}))]}; echo -e " - $s"; mpg123 -q "$s"; done
+
+# Mplayer save stream to file
+mplayer -nolirc <Streaming_URL> -dumpstream -dumpfile output.mp3
+
+# Random music player
+FILE='mp3.list';LNNO=`wc -l $FILE|cut -d' ' -f 1`;LIST=( `cat $FILE` );for((;;)) do SEED=$((RANDOM % $LNNO));RNNO=$(python -c "print int('`openssl rand -rand ${LIST[$SEED]} 8 -hex 2>/dev/null`', 16) % $LNNO");mplayer ${LIST[$RNNO]};sleep 2s; done
+
+# Play radio stream with mplayer
+mplayer -nolirc http://5253.live.streamtheworld.com/VIRGINRADIO_DUBAIAAC
+
+# Stream video to screen with a delay (cyberart)
+mencoder tv:// -tv driver=v4l2:width=320:height=240:device=/dev/video1 -nosound -ovc lavc -really-quiet -quiet -o - | (sleep 10m; cat) | mplayer - -cache 512
+
+# Play a random avi file in the current directory tree
+mplayer $(find . -iname '*.avi' | shuf -n1)
+
+# Music streaming via ssh
+ssh login@server "cat path/filename.mp3" | mplayer -
+
+# don't have video stop at EOF while it is downloading
+mplayer <(tail -fc +0 <filename>)
+
+# Get the total length of all video / audio in the current dir (and below) in H:m:s
+find /path/to/dir -iname "*.ext" -print0 | xargs -0 mplayer -really-quiet -cache 64 -vo dummy -ao dummy -identify 2>/dev/null | awk '/ID_LENGTH/{gsub(/ID_LENGTH=/,"")}{SUM += $1}END{ printf "%02d:%02d:%02d\n",SUM/3600,SUM%3600/60,SUM%60}'
+
+# Makes mplayer show file played through libnotify, 140 characters
+r="readlink /proc/`pgrep -o mplayer`/fd/3";while [ -e "`$r`" ];do if [ "$f" = "`$r`" ];then sleep 1;else f="`$r`";notify-send " $f";fi;done
+
+# Write out 20 png format frames from a video starting at 3 minutes, 46 seconds
+mplayer -vo png -ss 3:46 -frames 20 stairs.mp4
+

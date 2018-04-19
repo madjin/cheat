@@ -1,0 +1,37 @@
+TCP Port #           Service
+20                   FTP (data channel)
+21                   FTP (control channel)
+22                   SSH and SCP
+23                   Telnet
+25                   SMTP
+49                   TACACS authentication service
+80                   HTTP
+110                  POP3
+115                  SFTP
+119                  NNTP
+137                  NetBIOS name service
+138                  NetBIOS datagram service
+139                  NetBIOS session service
+143                  IMAP
+389                  LDAP
+443                  HTTPS
+989                  FTPS (data channel)
+990                  FTPS (control channel)
+3389                 MS WBT Server
+
+UDP Port #           Service
+22                   SSH and SCP
+49                   TACACS authentication service
+53                   DNS name queries
+69                   Trivial File Transfer Protocol (TFTP)
+80                   HTTP
+137                  NetBIOS name service
+138                  NetBIOS datagram service
+139                  NetBIOS session service
+143                  IMAP
+161                  SNMP
+389                  LDAP
+989                  FTPS (data channel)
+990                  FTPS (control channel)
+3389                 MS WBT Server
+

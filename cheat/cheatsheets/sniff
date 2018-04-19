@@ -1,0 +1,24 @@
+#MITM with ettercap
+ettercap -M arp -T -q -i interface /spoof_ip/ /target_ip/ -w output_file.pcap
+
+#traffic analysis
+Bmon https://github.com/tgraf/bmon 
+
+#sniff with tcpdump
+tcpdump -nl -i bge0 not port ssh and src \(192.168.16.121 or 192.168.16.54\)
+tcpdump -n -i eth1 net 192.168.16.121   #select to/from a single ip
+tcpdump -n -i eth1 net 192.168.16.0/24  #select traffic to/from a network
+tcpdump -l > dump && tail -f dump       #Buffered output
+tcpdump -i r10 -w traffic.r10           #write traffic headers in binary file
+tcpdump -r traffic.r10                  #write traffic + payload in binary file
+tcpdump port  80
+tcpdump host google.com                 #Classics
+tcpdump -i eth0 -X port \(110 or 143\)  #check if pop or imap is secure
+tcpdump -n -i eth0 icmp                 #only catch pings
+tcpdump -i eth0 -s 0 -A port 80 | grep GET   # -s 0 for full packet -A for ASCII
+
+* Important options 
+-A   #print each packets in clear text (without header)
+-X   #print packets in hex and ASCII
+-l   #make stdout line buffered
+-D   #print all interfaces available
