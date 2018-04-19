@@ -1,0 +1,16 @@
+# Create animated gif from youtube video
+youtube-dl -o bun.flv http://www.youtube.com/watch?v=SfPLcQhXpCc; mplayer bun.flv -ss 03:16 -endpos 5 -vo jpeg:outdir=bun:quality=100:smooth=30:progressive -vf scale=320:240 -nosound; convert -delay 4 -loop 0 bun/*.jpg bun.gif
+
+# Varied delay between frames
+convert -delay 100 frame1.gif -delay 200 frame2.gif -loop 0 -pause 500 animated-image.gif
+
+
+# Change FPS / delay for gif [after recording from gee]
+gifsicle -d 24 -O --colors 256 1422146961.06.gif > new.gif
+
+
+# Loop backwords from end like a yoyo
+convert brighten2.gif -coalesce -duplicate 1,-2-1 -quiet -layers OptimizePlus -loop 0 patrol.gif
+
+# drain saturation of colors
+for i in {1..20}; do convert file.jpg -modulate "$i"0,0 out-$i.png; done

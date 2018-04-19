@@ -1,0 +1,71 @@
+nvestigate? Keep calm and memorize this
+/*
+
+#Who's there?
+w
+last
+
+#What was previously done?
+history
+
+#What's running?
+pstree -a
+ps aux
+
+#Listen
+netstat -ntlp [nulp / nxlp]
+
+#Hardware
+lspci
+dmidecode
+ethtool
+
+#IO Performances
+iostat -kx 2
+vmstat 2 10
+mpstat 2 10
+dstat --top-io --top-bio
+
+#mount points
+mount 
+cat /etc/fstab
+vgs
+pvs
+lvs
+df -h 
+
+#Kernel, interrupts and network usage
+sysctl -a | grep ...
+cat /proc/interrupts
+cat /proc/net/ip_conntrack 
+netstat
+ss -s
+
+#System logs / Kernel messages
+dmesg
+less var/log/messages[secure or auth]
+
+#cronjobs
+ls /etc/cron* + cat
+for user in $(cat /etc/passwd | cut -f1 -d:); do crontab -l -u $user; done
+
+    users > logged_in_users
+    last > last_login_times
+    ps auxf > current_running_programs
+    netstat -a --program > current_network_connections
+    uname -a > kernel_before_reboot
+    lsmod > current_kernel_modules
+    lsof > currently_open_files
+    ifdown wlan0   #disables wifi, also, switch off router.
+    cp /var/log/auth.log ~/auth_copy
+    cp /var/log/dmesg ~/dmesg_copy
+    cp ~/.bash_history ~/bash_history_copy
+    iptables -L > ~/current_firewall_rules
+
+    last
+    dmesg | grep removable\ disk
+    find ~ /bin /sbin /usr/bin /usr/sbin /etc -ctime 1
+    less ~/.bash_history
+
+    tail /var/log/auth.log
+    dmesg | tail

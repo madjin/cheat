@@ -1,0 +1,77 @@
+# commandlinefu.com by David Winterbottom
+
+# return the latest kernel version from a Satellite / Spacewalk server software channel
+spacecmd --server server softwarechannel_listlatestpackages softwarechannel.name | grep ^kernel-[[:digit:]]
+
+# git log with color and path
+alias gitlog='git log -10 --graph --date-order -C -M --pretty=format:"%C(yellow)%h%C(reset) - %C(bold green)%ad%C(reset) - %C(dim yellow)%an%C(reset) %C(bold red)>%C(reset) %C(white)%s%C(reset) %C(bold red)%d%C(reset) " --abbrev-commit --date=short'
+
+# Open (in vim) all modified files in a git repository
+git status --porcelain | sed -ne 's/^ M //p' | tr '\n' '\0' | tr -d '"' | xargs -0 vim
+
+# Using Git, stage all manually deleted files.
+git rm $(git ls-files --deleted)
+
+# Get the URL for the git-annex webapp
+grep URL ~/annex/.git/annex/webapp.html | tr -d '">' | awk -F= '{print $4 "=" $5}'
+
+# Export unpushed files list
+git log origin/master..master --name-only --pretty="format:" | sort | uniq | xargs tar -rf mytarfile.tar
+
+# generate file list modified since last commit and export to tar file
+git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT COMMID_HASH | xargs tar -rf mytarfile.tar
+
+# autocreate git tag
+git tag rel--`date +%Y-%m-%d--%H-%M-%S` -m "(%) rel: stage"
+
+# Get first Git commit hash
+git rev-list --max-parents=0 HEAD
+
+# Copy uncommitted changes from remote git repository
+ssh HOST '(cd REPO_DIR && git diff --name-only HEAD | cpio -o -Hnewc --quiet)' | cpio -iduv --quiet -Hnewc
+
+# Automatically sync current git project with remote host while editing
+while true; do rsync -vR $(git ls-files | inotifywait -q -e modify -e attrib -e close_write --fromfile - --format '%w') user@host:dest/dir/; done
+
+# simple single-lined git log
+git log --pretty=oneline --abbrev-commit
+
+# Lint Git unstaged PHP files
+git status -s | grep -o ' \S*php$' | while read f; do php -l $f; done
+
+# Fast search in man files or bz-files by keyword direct by man or bz files
+bzgrep -lE "COMMIT_EDITMSG" /usr/share/man/man?/git*
+
+# Mass rename files in git
+for file in $(git ls-files | grep old_name_pattern); do git mv $file $(echo $file | sed -e 's/old_name_pattern/new_name_pattern/'); done
+
+# Create md5sum of a directory
+find -name .git -prune -o -type f -exec md5sum {} \; | sort -k2 | md5sum
+
+# Create md5sum of a directory
+find -type f | grep -v "^./.git" | xargs md5sum | md5sum
+
+# Get a list of all TODO/FIXME tasks left to be done in your GIT project
+alias tasks='git grep -EI "TODO|FIXME"'
+
+# 100% rollback files to a specific revision
+git reset --hard <commidId> && git clean -f
+
+# Get a list of all TODO/FIXME tasks left to be done in your project
+alias tasks='grep --exclude-dir=.git -rEI "TODO|FIXME" . 2>/dev/null'
+
+# git diff external without additional script
+git config --global diff.external 'bash -c "meld $2 $5"'
+
+# Print out the contents of a Git repository (useful for broken repositories)
+find .git/objects -type f -printf "%P\n" | sed s,/,, | while read object; do echo "=== $obj $(git cat-file -t $object) ==="; git cat-file -p $object; done
+
+# Print the RSA key fingerprint of github.com
+curl -s https://help.github.com/articles/generating-ssh-keys | grep -Po  --color=never "RSA key fingerprint is (:?[A-z0-9]\:?){32}"
+
+# Load your [git-controlled] working files into the vi arglist.
+vim $(git diff origin/master --name-only)
+
+# bulk git pull
+for dir in ~/git/*; do (cd "$dir" && git pull); done
+

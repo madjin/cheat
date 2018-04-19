@@ -1,0 +1,10 @@
+site: [url]               # search only one [url]
+numrange:[#]...[#]        # search within a number range
+date:[ #]                 # search within past [#] months
+link: [url]               # find pages that link to [url]
+related: [url]            # find pages related to [url]
+intitle: [string]         # find pages with [string] in title
+inurl: [string]           # find pages with [string] in url
+filetype: [xls]           # find files that are xls
+phonebook: [name]         # find phone book listings of [name]
+

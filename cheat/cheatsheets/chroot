@@ -1,0 +1,24 @@
+# AS ROOT:  Make sure to bind mount your proc and devices [while in directory to chroot]
+mount /dev/ dev/ -o bind      # mount devices while in local root directory
+mount /sys/ sys/ -o bind   
+mount /proc/ proc/ -o bind
+chroot ./ bin/zsh             # chroot will execute the shell in directory
+mount /dev dev/ -o bind; mount /sys/ sys/ -o bind; mount /proc/ proc/ -o bind; chroot ./ bin/zsh
+
+#Access GUI applications
+export DISPLAY=:0.0    # in chroot shell
+xhost +                # in system shell
+
+# Suppose you want to run Firefox in chroot jail to avoid security problems with signed Java applets
+# and other components which could have access to your personal files. You could:
+gksudo chroot /var/chroot firefox -DISPLAY=:0.0
+
+# If you want the chroot to have its own display, can use Xnest command [download xhost/xnest]
+# Ensure that /proc is mounted and DNS resolution is set-up within the chroot
+#
+Xnest -ac :1                  # into a terminal 
+sudo chroot /var/chroot       # into another terminal
+export DISPLAY=localhost:1    # while in chroot shell [if have problem, use 127.0.0.1]
+
+# can start window manager inside chroot and should appear inside the chroot!
+
