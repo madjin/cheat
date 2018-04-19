@@ -1,0 +1,75 @@
+# XKCD "now" wallpaper (http://xkcd.com/now)
+convert http://imgs.xkcd.com/comics/now.png -negate /tmp/now.png ; DISPLAY=:0.0 awsetbg -c /tmp/now.png
+
+# List files older than one year, exluding those in the .snapshot directory
+find /path/to/directory -not \( -name .snapshot -prune \) -type f -mtime +365
+
+# get a fresh commandlinefu-item each day as motd
+0 0 * * * curl http://www.commandlinefu.com/commands/random/plaintext -o /etc/motd -s -L
+
+# make GNU find follow symbolic links
+find -L /home/sonic/archive -name '*gz' -type f
+
+# run all
+find /var/scripts -name 'backup*' -exec {} ';'
+
+# kworker issue. Phase 2. Clobbering the interrupt that is problematic
+echo "disable" > /sys/firmware/acpi/interrupts/gpeXX
+
+# Discover the process start time
+ps -eo pid,lstart,cmd
+
+# get a random number in bash
+echo $[RANDOM % 100]  # range 0-99
+
+# One liner to show a notification on Desktop in case the load exceeds 1.
+load=`uptime|awk -F',' '{print $3}'|awk '{print $3}'`; if [[ $(echo "if ($load > 1.0) 1 else 0" | bc) -eq 1 ]]; then notify-send "Load $load";fi
+
+# sleep for a random amount of time up to an hour
+sleep `shuf -i 0-3600 -n 1`
+
+# find duplicate messages in a Maildir
+find $folder -name "[1-9]*" -type f -print|while read file; do echo $file $(sed -e '/^$/Q;:a;$!N;s/\n //;ta;s/ /_/g;P;D' $file|awk '/^Received:/&&!r{r=$0}/^From:/&&!f{f=$0}r&&f{printf "%s%s",r,f;exit(0)}');done|sort -k 2|uniq -d -f 1
+
+# backup your history
+gzip -c ~/.bash_history > ~/.backup/history-save-$(date +\%d-\%m-\%y-\%T).gz
+
+# rsync from one remote to another remote, only local computer has an open ssh key
+mkdir r1 && sshfs remote1:/home/user r1 && rsync r1/stuff remote2:~/backups/
+
+# A simple way to securely use passwords on the command line or in scripts
+wget --input-file=~/donwloads.txt --user="$USER" --password="$(gpg2 --decrypt ~/.gnupg/passwd/http-auth.gpg 2>/dev/null)"
+
+# Run top and pipe out Cpu(s) with crontab (no batch)
+20 11 * * * root /bin/top -n 2 -d 1 | grep "Cpu(s):" > file.txt
+
+# Show crontabs for all users
+for i in /var/spool/cron/tabs/*; do echo ${i##*/}; sed 's/^/\t/' $i; echo; done
+
+# Show crontabs for all users
+for i in /var/spool/cron/*; do echo ${i##*/}; sed 's/^/\t/' $i; echo; done
+
+# Show crontabs for all users
+for user in $(getent passwd|cut -f1 -d:); do echo "### Crontabs for $user ####"; crontab -u $user -l; done
+
+# Show crontabs for all users
+for user in $(cut -f1 -d: /etc/passwd); do echo "### Crontabs for $user ####"; crontab -u $user -l; done
+
+# Send e-mail if host is 'dead' or not reachable
+10,30,50 * * * * ping -c1 -w3 192.168.0.14 >/dev/null
+
+# Send e-mail if host is 'dead' or not reachable
+10,30,50 * * * * ping -q -c1 -w3 192.168.0.14 | grep '1 received' - || mail -ne -s'Host 192.168.0.14 not reachable' admin@example.com
+
+# Make alert if host is 'dead' or not reachable
+10,30,50 * * * * ping -q -c1 -w3 192.168.0.14 | grep '1 received' - || env DISPLAY=:0 xeyes
+
+# Command to generate an integer from the hostname, valid within the Days of Month
+$(($(hostname|sum|cut -f1 -d" ")%27+1))
+
+# Which PATH variable should I use for this scirpt?
+whichpath() { local -A path; local c p; for c; do p=$(type -P "$c"); p=${p%/*}; path[${p:-/}]=1; done; local IFS=:; printf '%s\n' "${!path[*]}"; }
+
+# Print a cron formatted time for 2 minutes in the future (for crontab testing)
+crontest () { date '-d +2 minutes' +'%M %k %d %m *'; }
+

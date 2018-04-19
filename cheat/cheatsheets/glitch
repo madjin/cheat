@@ -1,0 +1,120 @@
+glitch-art
+==========
+# To do
+- Design an algorithm to symbolize decay via data corruption
+- Compile Butterflow, a tool to add FPS in video and slo-mo
+- Host Glitchy3bitdither and imageglitcher server
+- Steganography
+- Inject subtitles into text
+- Create hotkeys / alias's for batch processing
+- Master 2D before moving to 3D [flip / combine reverse loop / mogrify / masking / layering]
+- Isolate glitch
+
+# Notes
+* 1 year of video @ 360p = ~ 2.4tb 
+* 1 year of audio @ 128kb/s = ~ 242gb
+
+# Audio Hacks
+
+# Extract 60 seconds of audio from source
+# i = input, ab = bitrate (128kb), vn = no video output, ac 2 = 2 channels, ar 44100 indicates sampling frequency
+	
+	ffmpeg -i video.flv -ab 128k -ac 2 -ar 44100 -vn audio.mp3
+
+# Extract raw audio from video
+	
+	ffmpeg -i source.mpg -f s16le -acodec pcm_s16le audio.raw
+
+# Convert an mp3 and add to it a img
+	
+	lame -v 2 -b 192 --ti /path/to/file.jpg audio.mp3 new-audio.mp3
+
+# Video Hacks
+# No matter what extension, videos are just a sequence of images to INDUSTRIAL STRENGTH FFMPEG/AVCONV
+
+# Convert video file to sequence of images
+
+	ffmpeg -i source.mpg -r 24 -f image2 still-%6d.png
+
+# Separate gif into frames
+
+	convert input.gif output.png
+
+# Preview before invoking convert to reanimate back into a gif
+		
+	animate -delay 10 shot00* +page -delay 8 funny.gif +page -delay 3 *.png
+	
+# Use thunar's mass file renamer or regex to keep file names organized, the order will matter
+
+	rename 's/lel.p(\d+)/p$1.png/' lel*
+
+# Capture video of a linux desktop [useful for VR output]
+
+	ffmpeg -f x11grab -s wxga -r 25 -i :0.0+1366,0 -qscale 0 /tmp/out.mpg
+
+# Capture frames from mplayer with 's' hotkey
+
+    echo "vf=screenshot" >> ~/.mplayer/config
+
+# Creating A Single Image Video With Audio via ffmpeg, add audio via -i
+
+    ffmpeg -loop 1 -i image.png -i sound.mp3 -shortest video.mp4
+    avconv -loop 1 -i pizzacat.jpg -t 60 -r 2 out.avi
+
+# Advanced Tech
+
+# Grab windowid using xwininfo and then capture video of the x11 window
+    recordmydesktop --no-sound --window-id 0xc600086
+
+# Capture x11 window screenshot
+    xwd -out file.png
+    xwd | convert - capture.png
+    import -window 0x1600077 screenshot.jpg
+
+
+# This will extract one video frame per second from the video and will output them in files named foo-001.jpeg, resized to WxH
+    ffmpeg -i foo.avi -r 1 -s WxH -f image2 foo-%03d.jpeg
+
+# Create a gif from a video using mplayer, ex: 10fps @ 640x480 in given start and end point.
+
+	mplayer input.mp4 -vo gif89a:fps=10:output=output.gif -vf scale=640:480 -ss 21:42 -endpos 22:08
+
+# Create gif while watching video file using gee.py
+
+	https://github.com/HarHar/gee
+
+# Convert black to transparent
+
+	convert frame.png -fuzz 50% -transparent black output.png
+
+# Overlay onto a background image [http://www.imagemagick.org/Usage/masking/]
+
+	convert output.png -channel Black -separate +channel new.png +swap alpha Off -composite frame-T.png
+
+# Combine transparency and background image and negate white, turning white background transparent [https://i.imgur.com/mbzdNQv.png]
+
+	convert foo.png -channel blue -separate +channel -negate \ bar*.png +swap -alpha Off -compose CopyOpacity -composite \ new.png
+
+# If you remove negate, the inverse will be filled: [https://i.imgur.com/JuptaPl.png]
+
+# Add a delay before the event horizon [when the image glitches]
+
+	convert -delay 500 warm-5clock.png -dispose Background +page -delay 5 out*.png -loop 0 test.gif
+
+# Make image semi-transparent
+	
+	convert input.png -alpha set -channel A -fx 0.5 output.png
+
+# Optimize all PNG files
+
+	find . -name *.png | xargs optipng -nc -nb -o7 -full
+
+# List file names in to a text file then save a video called timelapse.avi
+
+	ls *.jpg > stills.txt
+	mencoder -nosound -ovc lavc -lavcopts vcodec=mpeg4:aspect=16/9:vbitrate=8000000 -vf scale=1920:1080 -o timelapse.avi -mf type=jpeg:fps=24 mf://@stills.txt
+
+
+# Progression of draining colors and modulating image brightness
+
+	for i in {1..20}; do convert file.jpg -modulate "$i"0,0 out-$i.png; done
