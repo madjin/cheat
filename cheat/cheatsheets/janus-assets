@@ -1,0 +1,45 @@
+## ----------- Assets ----------- ##
+
+http://janusvr.com/docs/build/introtojml/index.html 
+
+# Room
+
+<Room use_local_asset="room_plane" visible="false" pos="0 0 0" >
+<FireBoxRoom>
+<Assets>
+</Assets>
+</FireBoxRoom>
+
+# Image
+<AssetImage id="image" src="http://i.imgur.com/1IlzPtv.jpg" />
+<Image id="image" js_id="0" pos="0 1 10" scale="10 10 10" lighting="false" />
+
+# Sound
+<AssetSound id="music" src="song.mp3" />
+<Sound id="music" js_id="0" pos="0 1 5" rect="-100 -50 100 50" loop="true" />
+
+# Video
+<AssetObject id="screen" src="screen.obj" />
+<AssetVideo id="video" src="video.mp4" auto_play="true" loop="true" />
+<Object id="screen" js_id="0" pos="0 -1 8" scale="10 11 1" lighting="false" />
+
+# Object
+<AssetObject id="thing" src="thing.obj" />
+<Object id="thing" js_id="0" pos="0 2 10" scale="2 2 2" />
+
+# Shader
+<AssetShader id="shader" vertex_src="twist.txt" />
+<Object id="cube" js_id="0" pos="0 0 10" xdir="-1 0 0" zdir="0 0 -1" scale="2 4 2" shader_id="shader" />
+
+# Ghost
+<AssetGhost id="ghost" src="ghost.txt" />
+<Ghost id="ghost" ghost_id="ghost" scale="3 3 3" lighting="false" head_id="head" head_pos="0 0.2 0" body_id="body" />
+
+
+
+# Websurface
+<AssetWebSurface id="google" src="http://www.google.com/" width="1000" height="800" />
+<Object id="plane" js_id="1" pos="0 0 10" xdir="-1 0 0" zdir="0 0 -1" lighting="false" cull_face="none" websurface_id="http://www.google.com/" />
+
+# Scripts
+<AssetScript src="script.js" />

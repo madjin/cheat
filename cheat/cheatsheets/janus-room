@@ -1,0 +1,44 @@
+## ----------- ROOMS ----------- ##
+
+http://janusvr.com/docs/build/roomtag/index.html
+
+# Skybox
+<AssetImage id="sky_down"  src="sky_down.jpg" tex_clamp="true" />
+<AssetImage id="sky_right" src="sky_right.jpg" tex_clamp="true" />
+<AssetImage id="sky_front" src="sky_front.jpg" tex_clamp="true" />
+<AssetImage id="sky_back"  src="sky_back.jpg" tex_clamp="true" />
+<AssetImage id="sky_up"    src="sky_up.jpg" tex_clamp="true" />
+<AssetImage id="sky_left"  src="sky_left.jpg" tex_clamp="true" />
+<Room skybox_down_id="sky_down"  skybox_right_id="sky_right" skybox_front_id="sky_front" skybox_back_id="sky_back" skybox_up_id="sky_up" skybox_left_id="sky_left" >
+
+# Room Template [http://janusvr.com/docs/build/roomtag/img/templates.png]
+<Room use_local_asset="room_plane" pos="0 0 0" xdir="1 0 0" ydir="0 1 0" zdir="0 0 1">
+
+# Near Far Plane
+<Room use_local_asset="room_plane" near_dist="0.01" far_dist="12.0">
+
+# Gravity, Jump, Run, Walk
+<Room gravity="-3.0" jump_velocity="10.0" walk_speed="5.0" run_speed="10.0" use_local_asset="room_plane" >
+
+# Cursor Visible
+<Room use_local_asset="room_plane" cursor_visible="false">
+
+# Fog 
+<Room use_local_asset="room_plane" fog="true" fog_mode="exp" fog_density="0.1" fog_col="1 1 1">
+
+# Teleport Distance
+<Room use_local_asset="room_plane" teleport_min_dist="10.0" teleport_max_dist="100.0" >
+
+# Global Shader
+<AssetShader id="room_shader" src="party_frag.txt" />
+<Room shader_id="room_shader">
+
+# Multiplayer Server
+<Room server="presence.janusvr.com" port="5567" >
+
+# Reset Volume (??)
+
+# Global Env Probe
+<AssetImage id="skybox_radiance" src="radiance.dds" tex_clamp="false" tex_linear="true" /> 
+<AssetImage id="skybox_irradiance" src="irradiance64.dds" tex_clamp="false" tex_linear="true" />
+<Room cubemap_radiance_id="skybox_radiance" cubemap_irradiance_id="skybox_irradiance" >
